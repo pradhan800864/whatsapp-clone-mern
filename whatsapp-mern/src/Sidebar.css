@@ -3,6 +3,9 @@
   flex-direction: column;
   flex: 0.35;
 }
+.sidebar__chats::-webkit-scrollbar {
+  display: none;
+}
 .sidebar__header {
   display: flex;
   justify-content: space-between;
