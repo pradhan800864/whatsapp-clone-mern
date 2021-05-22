@@ -3,11 +3,16 @@ import './App.css';
 import Chat from './Chat';
 import Sidebar from './Sidebar';
 import Pusher from 'pusher-js';
-import axios from './axios'
+import axios from './axios';
+import Login from './Login';
+import { useStateValue } from './StateProvider'
 
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 function App() {
+  const [{ user }, dispatch] = useStateValue();
 
   const[messages, setMessages] =  useState([])
+  // const[user, setUser] = useState(null)
 
   useEffect(() =>{
     axios.get('/messages/sync').then(response => {
@@ -30,14 +35,27 @@ function App() {
     }
   },[messages])
 
-  console.log(messages);
-
+ 
   return (
     <div className="app">
-      <div className="app__body">
-        <Sidebar/>
-        <Chat messages={messages}/>
-      </div>
+      {!user ? (
+        <Login />
+      ) : (
+        <div className="app__body">          
+          <Router >
+            <Sidebar/>
+            <Switch>
+              <Route path="/rooms/:roomId">
+                <Chat messages={messages}/>
+              </Route>
+
+              <Route path='/'>
+                <Chat />
+              </Route>
+            </Switch>
+          </Router>
+        </div>
+      )}
     </div>
   );
 }
